@@ -21,7 +21,7 @@ Build an app that allows you to video chat with your friends and colleagues just
 - Web RTC
 - Socket.io
 - Node.js
-- Netlify + Heroku (Hosting)
+- Netlify + Render (Hosting)
 
 #
 
