@@ -6,7 +6,7 @@ const SocketContext = createContext();
 
 // const socket = io('http://localhost:5000');
 // initial context of socket.io
-const socket = io('https://video-chat-app-sk.herokuapp.com');
+const socket = io('https://video-chat-app.onrender.com/');
 
 const ContextProvider = ({ children }) => {
   const [callAccepted, setCallAccepted] = useState(false);
