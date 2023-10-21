@@ -1,5 +1,5 @@
 # video-chat-app
-### [Live Site](https://video-chat-app-sk.netlify.app/)
+### [Live Site](https://video-chat-webapp.vercel.app/)
 <img style="text-align:center" src="https://user-images.githubusercontent.com/81709725/126911393-0ce3de2d-912b-4d96-be30-453d7bd207f6.png" width=800px/>
 
 #
