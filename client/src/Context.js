@@ -1,20 +1,20 @@
-import React, { createContext, useState, useRef, useEffect } from 'react';
-import { io } from 'socket.io-client';
-import Peer from 'simple-peer';
+import React, { createContext, useState, useRef, useEffect } from "react";
+import { io } from "socket.io-client";
+import Peer from "simple-peer";
 
 const SocketContext = createContext();
 
 // const socket = io('http://localhost:5000');
 // initial context of socket.io
-const socket = io('https://video-chat-app.onrender.com/');
+const socket = io("https://video-chat-app.onrender.com/");
 
 const ContextProvider = ({ children }) => {
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState();
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [call, setCall] = useState({});
-  const [me, setMe] = useState('');
+  const [me, setMe] = useState("");
 
   const myVideo = useRef();
   const userVideo = useRef();
@@ -31,9 +31,9 @@ const ContextProvider = ({ children }) => {
       });
 
     // listen for a specific action
-    socket.on('me', (id) => setMe(id));
+    socket.on("me", (id) => setMe(id));
 
-    socket.on('callUser', ({ from, name: callerName, signal }) => {
+    socket.on("callUser", ({ from, name: callerName, signal }) => {
       setCall({ isReceivingCall: true, from, name: callerName, signal });
     });
   }, []);
@@ -45,11 +45,11 @@ const ContextProvider = ({ children }) => {
     const peer = new Peer({ initiator: false, trickle: false, stream });
 
     // peer handlers
-    peer.on('signal', (data) => {
-      socket.emit('answerCall', { signal: data, to: call.from });
+    peer.on("signal", (data) => {
+      socket.emit("answerCall", { signal: data, to: call.from });
     });
 
-    peer.on('stream', (currentStream) => {
+    peer.on("stream", (currentStream) => {
       // stream of other person
       userVideo.current.srcObject = currentStream;
     });
@@ -64,8 +64,8 @@ const ContextProvider = ({ children }) => {
     // initiator: true because we are calling
     const peer = new Peer({ initiator: true, trickle: false, stream });
 
-    peer.on('signal', (data) => {
-      socket.emit('callUser', {
+    peer.on("signal", (data) => {
+      socket.emit("callUser", {
         userToCall: id,
         signalData: data,
         from: me,
@@ -73,11 +73,11 @@ const ContextProvider = ({ children }) => {
       });
     });
 
-    peer.on('stream', (currentStream) => {
+    peer.on("stream", (currentStream) => {
       userVideo.current.srcObject = currentStream;
     });
 
-    socket.on('callAccepted', (signal) => {
+    socket.on("callAccepted", (signal) => {
       setCallAccepted(true);
 
       peer.signal(signal);
@@ -92,6 +92,24 @@ const ContextProvider = ({ children }) => {
     connectionRef.current.destroy();
 
     window.location.reload();
+  };
+
+  const toggleMute = () => {
+    if (stream) {
+      const audioTrack = stream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+      }
+    }
+  };
+
+  const toggleVideo = () => {
+    if (stream) {
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+      }
+    }
   };
 
   return (
@@ -110,6 +128,8 @@ const ContextProvider = ({ children }) => {
         callUser,
         leaveCall,
         answerCall,
+        toggleMute,
+        toggleVideo,
       }}
     >
       {/* All the components that we have in there are going to be inside the Socket wrapped into it */}
